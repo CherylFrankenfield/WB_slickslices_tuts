@@ -23,6 +23,7 @@ export default {
                 maxLength: 100,
             },
         },
+        {
             name: 'image',
             title: 'Image',
             type: 'image',
@@ -37,6 +38,6 @@ export default {
             description: 'Price of the pizza in cents',
             validation: Rule => Rule.min(1000),
             //ToDo: Add custom input component
-        },        
+        },           
     ],
 };
