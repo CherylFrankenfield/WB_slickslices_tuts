@@ -8,7 +8,6 @@ import pizza from './pizza';
 import topping from './topping';
 import person from './person';
 
-
 export default createSchema({
   // We name our schema
   name: 'default',
