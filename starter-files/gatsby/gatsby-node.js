@@ -31,10 +31,41 @@ async function turnPizzasIntoPages({ graphql, actions }) {
   });
 }
 
+async function turnToppingsIntoPages({ graphql, actions }) {
+  console.log(`turn toppings into pages!!`);
+  const toppingsTemplate = path.resolve('./src/pages/pizzas.js');
+  const { data } = await graphql(`
+    query {
+      toppings: allSanityTopping {
+        nodes {
+          name
+          id
+        }
+      }
+    }
+  `);
+  data.toppings.nodes.forEach((topping) => {
+    //console.log(`creating page for topping`, topping.name);
+    actions.createPage({
+      path: `topping/${topping.name}`,
+      component: toppingsTemplate,
+      context: {
+        topping: topping.name,
+        //REGEX
+        //toppingRegex: `/${topping.name}/i`,
+      },
+    });
+  });
+}
+
 export async function createPages(params) {
   //Create pages dynamically 
-  //1.pizzas
-  await turnPizzasIntoPages(params); 
+  //Promise.all - waits for all promises to resolve before finishing function
+  await Promise.all([
+    turnPizzasIntoPages(params),
+    turnToppingsIntoPages(params)
+  ]);
+   //1.pizzas
   //2.toppings
   //3.slicemasters
 }
