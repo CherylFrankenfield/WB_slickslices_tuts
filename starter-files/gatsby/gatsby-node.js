@@ -1,10 +1,11 @@
 import path from 'path';
+import fetch from 'isomorphic-fetch';
 //^^from Node
 
 async function turnPizzasIntoPages({ graphql, actions }) {
   //1.get a template for this page
   const pizzaTemplate = path.resolve('./src/templates/Pizza.js');
-  //2.query all pizzas - below since we're using Node API, it needs an await 
+  // 2.query all pizzas - below since we're using Node API, it needs an await 
   const { data } = await graphql(`
     query {
       pizzas: allSanityPizza {
@@ -18,9 +19,9 @@ async function turnPizzasIntoPages({ graphql, actions }) {
     }
   `);
   //console.log(data);
-  //3.loop over each pizza and create a page for that pizza
-  data.pizzas.nodes.forEach(pizza => {
-    //console.log('creating a page for ', pizza.name)
+  // 3.loop over each pizza and create a page for that pizza
+  data.pizzas.nodes.forEach((pizza) => {
+    // console.log('creating a page for ', pizza.name)
     actions.createPage({
       path: `pizza/${pizza.slug.current}`,
       component: pizzaTemplate,
@@ -32,7 +33,6 @@ async function turnPizzasIntoPages({ graphql, actions }) {
 }
 
 async function turnToppingsIntoPages({ graphql, actions }) {
-  console.log(`turn toppings into pages!!`);
   const toppingsTemplate = path.resolve('./src/pages/pizzas.js');
   const { data } = await graphql(`
     query {
@@ -45,27 +45,61 @@ async function turnToppingsIntoPages({ graphql, actions }) {
     }
   `);
   data.toppings.nodes.forEach((topping) => {
-    //console.log(`creating page for topping`, topping.name);
+    // console.log(`creating page for topping`, topping.name);
     actions.createPage({
       path: `topping/${topping.name}`,
       component: toppingsTemplate,
       context: {
         topping: topping.name,
-        //REGEX
-        //toppingRegex: `/${topping.name}/i`,
+        // REGEX
+        // toppingRegex: `/${topping.name}/i`,
       },
     });
   });
 }
 
+async function fetchBeersAndTurnIntoNodes({
+  actions,
+  createNodeId,
+  createContentDigest,
+}) {
+  // 1. Fetch list of beers
+  const res = await fetch('https://sampleapis.com/beers/api/ale');
+  const beers = await res.json();
+  // 2. Loop over each one
+  for (const beer of beers) {
+    const nodeContent = JSON.stringify(beer);
+    const nodeMeta = {
+      id: createNodeId(`beer-${beer.name}`),
+      parent: null,
+      children: [],
+      internal: {
+        type: 'Beer',
+        mediaType: 'application/json', // could be images or json, etc., other plugins will be able to find the media
+        contentDigest: createContentDigest(beer),
+      },
+    };
+    // 3 Create a node for that beer
+    actions.createNode({
+      ...beer,
+      ...nodeMeta,
+    });
+  }
+}
+
+export async function sourceNodes(params) {
+  // fetch a list of beers and source them into gatsby API
+  await Promise.all([fetchBeersAndTurnIntoNodes(params)]);
+}
+
 export async function createPages(params) {
-  //Create pages dynamically 
-  //Promise.all - waits for all promises to resolve before finishing function
+  // Create pages dynamically
+  // Promise.all - waits for all promises to resolve before finishing function
   await Promise.all([
     turnPizzasIntoPages(params),
-    turnToppingsIntoPages(params)
+    turnToppingsIntoPages(params),
   ]);
-   //1.pizzas
-  //2.toppings
-  //3.slicemasters
+  // 1.pizzas
+  // 2.toppings
+  // 3.slicemasters
 }
