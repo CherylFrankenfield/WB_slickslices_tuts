@@ -31,6 +31,7 @@ export default function Pagination({
   pageSize,
   totalCount,
   currentPage,
+  skip,
   base,
 }) {
   const totalPages = Math.ceil(totalCount / pageSize);
@@ -40,8 +41,10 @@ export default function Pagination({
   const hasPrevPage = prevPage >= 1;
   return (
     <PaginationStyles>
-      <Link disabled={!hasPrevPage} to={`${base}/${prevPage}`}>&#8592; Prev</Link>
-      {Array.from({length: totalPages }).map((_, i) => (
+      <Link disabled={!hasPrevPage} to={`${base}/${prevPage}`}>
+        &#8592; Prev
+      </Link>
+      {Array.from({ length: totalPages }).map((_, i) => (
         <Link
           className={currentPage === 1 && i === 0 ? 'current' : ''}
           to={`${base}/${i > 0 ? i + 1 : ''}`}
@@ -49,7 +52,9 @@ export default function Pagination({
           {i + 1}
         </Link>
       ))}
-      <Link disabled={!hasNextPage} to={`${base}/${nextPage}`}>Next →</Link>
+      <Link disabled={!hasNextPage} to={`${base}/${nextPage}`}>
+        Next →
+      </Link>
     </PaginationStyles>
   );
 }
