@@ -9,9 +9,11 @@ export default {
     title: 'Slicks slices',
     siteUrl: 'https://gatsby.pizza',
     description: 'The best pizza place in Jersey',
+    twitter: '@somerandomhandle23845690294',
   },
   plugins: [
     // eslint-disable-next-line prettier/prettier
+   'gatsby-plugin-react-helmet',
    'gatsby-plugin-styled-components',
    {
       // name of plugin you are adding
