@@ -7,33 +7,42 @@ import calculatePizzaPrice from '../utils/calculatePizzaPrice';
 import formatMoney from '../utils/formatMoney';
 import OrderStyles from '../styles/OrderStyles';
 import MenuItemStyles from '../styles/MenuItemStyles';
+import usePizza from '../utils/usePizza';
 
 export default function OrderPage({ data }) {
+  const pizzas = data.pizzas.nodes;
   const { values, updateValue } = useForm({
     name: '',
     email: '',
   });
-  const pizzas = data.pizzas.nodes;
+  const { order, addToOrder, removeFromOrder } = usePizza({
+    pizzas,
+    inputs: values,
+  });
   return (
     <>
       <SEO title="Order a Pizza!" />
       <OrderStyles>
         <fieldset>
           <legend>Your Info</legend>
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            name="name"
-            value={values.name}
-            onChange={updateValue}
-          />
-          <label htmlFor="email">Email</label>
-          <input
-            type="text"
-            name="email"
-            value={values.email}
-            onChange={updateValue}
-          />
+          <label htmlFor="name">
+            Name
+            <input
+              type="text"
+              name="name"
+              value={values.name}
+              onChange={updateValue}
+            />
+          </label>
+          <label htmlFor="email">
+            Email
+            <input
+              type="text"
+              name="email"
+              value={values.email}
+              onChange={updateValue}
+            />
+          </label>
         </fieldset>
         <fieldset className="menu">
           <legend>Menu</legend>
@@ -50,7 +59,15 @@ export default function OrderPage({ data }) {
               </div>
               <div>
                 {['S', 'M', 'L'].map((size) => (
-                  <button type="button">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      addToOrder({
+                        id: pizza.id,
+                        size,
+                      })
+                    }
+                  >
                     {size} {formatMoney(calculatePizzaPrice(pizza.price, size))}
                   </button>
                 ))}
