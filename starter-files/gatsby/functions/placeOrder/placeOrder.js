@@ -40,7 +40,7 @@ function wait(ms = 0) {
 }
 
 exports.handler = async (event, context) => {
-  await wait(5000);
+  // await wait(5000);
   const body = JSON.parse(event.body);
   // console.log(body);
   // validate data coming in is correct
@@ -55,6 +55,16 @@ exports.handler = async (event, context) => {
         }),
       };
     }
+  }
+
+  // make sure they actually have items in order
+  if (!body.order.length) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        message: `Why would you order nothing?`,
+      }),
+    };
   }
   // send email
   // send success or error message
