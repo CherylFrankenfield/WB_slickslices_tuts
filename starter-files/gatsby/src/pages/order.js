@@ -16,6 +16,7 @@ export default function OrderPage({ data }) {
   const { values, updateValue } = useForm({
     name: '',
     email: '',
+    mapleIsTasty: '',
   });
   const {
     order,
@@ -57,6 +58,13 @@ export default function OrderPage({ data }) {
               onChange={updateValue}
             />
           </label>
+          <input
+            type="mapleIsTasty"
+            name="mapleIsTasty"
+            value={values.mapleIsTasty}
+            onChange={updateValue}
+            className="mapleIsTasty"
+          />
         </fieldset>
         <fieldset className="menu" disabled={loading}>
           <legend>Menu</legend>
@@ -104,7 +112,7 @@ export default function OrderPage({ data }) {
           </h3>
           <div>{error ? <p>Error: {error}</p> : ''}</div>
           <button type="submit" disabled={loading}>
-           {loading ? 'Placing Order...' : 'Order Ahead'}
+            {loading ? 'Placing Order...' : 'Order Ahead'}
           </button>
         </fieldset>
       </OrderStyles>
