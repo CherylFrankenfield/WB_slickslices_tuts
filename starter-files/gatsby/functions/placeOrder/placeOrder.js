@@ -5,8 +5,9 @@ function generateOrderEmail({ order, total }) {
   <h2>Your Recent Order for ${total}</h2>
   <p>Please start walking over, we will have your order ready in the next 20 minutes.</p>
   <ul>
-    ${order.map(
-      (item) => `<li>
+    ${order
+      .map(
+        (item) => `<li>
        <img src="${item.thumbnail}" alt="${item.name}"/>
        ${item.size} ${item.name} - ${item.price}
     </li>`
@@ -32,7 +33,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+function wait(ms = 0) {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 exports.handler = async (event, context) => {
+  await wait(5000);
   const body = JSON.parse(event.body);
   // console.log(body);
   // validate data coming in is correct
