@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Logo from './Logo';
 
 const NavStyles = styled.nav`
-    margin-botton: 3rem;
+    /*margin-botton: 3rem; */
     .logo {
         transform: translateY(-25%);
     }
